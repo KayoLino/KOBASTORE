@@ -1,4 +1,7 @@
 using backend.Data;
+using backend.Interfaces;
+using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<KobaStoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("StoreDB")));
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
