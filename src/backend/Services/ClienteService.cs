@@ -41,5 +41,10 @@ namespace backend.Services
                 await _clienteRepository.DeleteAsync(cliente);
             }
         }
+
+        public async Task AddEnderecoAsync(int clienteId, Endereco endereco)
+        {
+            await _clienteRepository.AddEnderecoAsync(clienteId, endereco);
+        }
     }
 }

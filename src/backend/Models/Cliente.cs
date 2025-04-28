@@ -23,7 +23,7 @@ namespace backend.Models
 
         [Required]
         public string SenhaHash { get; set; }
-        public Endereco Endereco { get; set; }
+        public Endereco? Endereco { get; set; }
         public IEnumerable<Pedido> Pedidos { get; set; } = new List<Pedido>();
     }
 }

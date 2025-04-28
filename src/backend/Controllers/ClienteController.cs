@@ -59,5 +59,15 @@ namespace backend.Controllers
             await _clienteService.DeleteClienteAsync(id);
             return NoContent();
         }
+
+        [HttpPost("{clienteId}/endereco")]
+        public async Task<IActionResult> AddEndereco(int clienteId, [FromBody] Endereco endereco)
+        {
+            if (endereco == null)
+                return BadRequest();
+
+            await _clienteService.AddEnderecoAsync(clienteId, endereco);
+            return NoContent();
+        }
     }
 }

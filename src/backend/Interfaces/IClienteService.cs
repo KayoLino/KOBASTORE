@@ -9,5 +9,6 @@ namespace backend.Interfaces
         Task CreateClienteAsync(Cliente cliente);
         Task UpdateClienteAsync(Cliente cliente);
         Task DeleteClienteAsync(int id);
+        Task AddEnderecoAsync(int clienteId, Endereco endereco);
     }
 }
