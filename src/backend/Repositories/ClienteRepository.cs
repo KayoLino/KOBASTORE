@@ -1,7 +1,10 @@
 ﻿using backend.Data;
-using backend.Interfaces;
 using backend.Models;
+using backend.Interfaces.Cliente;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace backend.Repositories
 {
@@ -16,42 +19,48 @@ namespace backend.Repositories
 
         public async Task<IEnumerable<Cliente>> GetAllAsync()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes.ToListAsync(); 
         }
 
         public async Task<Cliente> GetByIdAsync(int id)
         {
             return await _context.Clientes
-                .Include(c => c.Endereco)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.Endereco) 
+                .FirstOrDefaultAsync(c => c.Id == id); 
         }
 
         public async Task AddAsync(Cliente cliente)
         {
-            await _context.Clientes.AddAsync(cliente);
-            await _context.SaveChangesAsync();
+            await _context.Clientes.AddAsync(cliente); 
+            await _context.SaveChangesAsync(); 
         }
 
         public async Task UpdateAsync(Cliente cliente)
         {
-             _context.Clientes.Update(cliente);
-            await _context.SaveChangesAsync();
+            _context.Clientes.Update(cliente); 
+            await _context.SaveChangesAsync(); 
         }
 
-        public async Task DeleteAsync(Cliente cliente)
+        public async Task DeleteAsync(int id)
         {
-            _context?.Clientes.Remove(cliente);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task AddEnderecoAsync(int clienteId, Endereco endereco)
-        {
-            var cliente = await _context.Clientes.FindAsync(clienteId);
+            var cliente = await GetByIdAsync(id);
             if (cliente != null)
             {
-                cliente.Endereco = endereco; 
-                await _context.SaveChangesAsync();
+                _context.Clientes.Remove(cliente); 
+                await _context.SaveChangesAsync(); 
             }
+        }
+
+        public async Task<bool> ClienteExistsByEmailAsync(string email)
+        {
+            return await _context.Clientes
+                .AnyAsync(c => c.Email == email); 
+        }
+
+        public async Task<Cliente> GetByEmailAsync(string email)
+        {
+            return await _context.Clientes
+                .FirstOrDefaultAsync(c => c.Email == email); 
         }
     }
 }

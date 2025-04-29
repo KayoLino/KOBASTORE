@@ -1,6 +1,6 @@
 ﻿namespace backend.DTOs.Cliente
 {
-    public class EnderecoClienteDTO
+    public class EnderecoDTO
     {
         public string Rua { get; set; }
         public string Numero { get; set; }
