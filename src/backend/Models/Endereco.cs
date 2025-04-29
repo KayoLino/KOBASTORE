@@ -27,9 +27,8 @@ namespace backend.Models
 
         public string? Complemento { get; set; } 
 
-        [Required]
         public int ClienteId { get; set; } 
 
-        public Cliente Cliente { get; set; } 
+        public Cliente? Cliente { get; set; } 
     }
 }
