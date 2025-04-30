@@ -1,5 +1,6 @@
 using backend.Data;
-using backend.Interfaces;
+using backend.Interfaces.Auth;
+using backend.Interfaces.Cliente;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ builder.Services.AddDbContext<KobaStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StoreDB")));
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(x =>

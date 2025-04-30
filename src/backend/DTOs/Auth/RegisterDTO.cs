@@ -9,12 +9,14 @@ namespace backend.DTOs.Auth
         public string Nome { get; set; }
 
         [Required]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF deve ter 11 dígitos")]
+        public string CPF { get; set; }
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF deve ter 11 dígitos")]
-        public string CPF { get; set; }
+      
 
         [Required]
         public DateTime DataNascimento { get; set; }

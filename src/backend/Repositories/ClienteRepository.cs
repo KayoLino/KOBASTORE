@@ -57,6 +57,13 @@ namespace backend.Repositories
                 .AnyAsync(c => c.Email == email); 
         }
 
+        public async Task<bool> ClienteExistsByCpfAsync(string cpf)
+        {
+            cpf = new string(cpf.Where(char.IsDigit).ToArray()); 
+            return await _context.Clientes
+                .AnyAsync(c => c.CPF == cpf);
+        }
+
         public async Task<Cliente> GetByEmailAsync(string email)
         {
             return await _context.Clientes
