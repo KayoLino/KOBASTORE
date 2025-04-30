@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(KobaStoreContext))]
-    [Migration("20250425195123_CriarBanco")]
-    partial class CriarBanco
+    [Migration("20250430181155_AddRefreshToken")]
+    partial class AddRefreshToken
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,18 +33,22 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("CPF")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Idade")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Senha")
+                    b.Property<string>("SenhaHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -77,7 +81,6 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Complemento")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Estado")
@@ -143,9 +146,8 @@ namespace backend.Migrations
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("ValorTotal")
                         .HasColumnType("decimal(18,2)");
@@ -192,6 +194,37 @@ namespace backend.Migrations
                     b.ToTable("Produtos");
                 });
 
+            modelBuilder.Entity("backend.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpiraEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Revogado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Usado")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("backend.Models.Endereco", b =>
                 {
                     b.HasOne("backend.Models.Cliente", "Cliente")
@@ -233,12 +266,25 @@ namespace backend.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("backend.Models.RefreshToken", b =>
+                {
+                    b.HasOne("backend.Models.Cliente", "Cliente")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("backend.Models.Cliente", b =>
                 {
                     b.Navigation("Endereco")
                         .IsRequired();
 
                     b.Navigation("Pedidos");
+
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("backend.Models.Pedido", b =>

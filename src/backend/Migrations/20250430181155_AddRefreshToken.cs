@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class CriarBanco : Migration
+    public partial class AddRefreshToken : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,10 +18,11 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CPF = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Idade = table.Column<int>(type: "int", nullable: false),
+                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SenhaHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +58,7 @@ namespace backend.Migrations
                     Cidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cep = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Complemento = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClienteId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -80,13 +81,36 @@ namespace backend.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     DataPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ValorTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pedidos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Pedidos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiraEm = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Usado = table.Column<bool>(type: "bit", nullable: false),
+                    Revogado = table.Column<bool>(type: "bit", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Clientes_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
                         principalColumn: "Id",
@@ -141,6 +165,11 @@ namespace backend.Migrations
                 name: "IX_Pedidos_ClienteId",
                 table: "Pedidos",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_ClienteId",
+                table: "RefreshTokens",
+                column: "ClienteId");
         }
 
         /// <inheritdoc />
@@ -151,6 +180,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "ItensPedido");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Pedidos");

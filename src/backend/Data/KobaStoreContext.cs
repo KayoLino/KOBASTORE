@@ -12,6 +12,7 @@ namespace backend.Data
         public DbSet<ItemPedido> ItensPedido { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +22,12 @@ namespace backend.Data
                 .HasOne(c => c.Endereco)
                 .WithOne(e => e.Cliente)
                 .HasForeignKey<Endereco>(e => e.ClienteId);
+
+            modelBuilder.Entity<Cliente>()
+               .HasMany(c => c.RefreshTokens)
+               .WithOne(rt => rt.Cliente)
+               .HasForeignKey(rt => rt.ClienteId)
+               .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.Cliente)

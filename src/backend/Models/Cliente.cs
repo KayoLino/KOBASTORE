@@ -13,7 +13,8 @@ namespace backend.Models
         public DateTime DataNascimento { get; set; }
         public string Telefone { get; set; }
         public string SenhaHash { get; set; }
-        public Endereco? Endereco { get; set; }
-        public IEnumerable<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public Endereco Endereco { get; set; }
+        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

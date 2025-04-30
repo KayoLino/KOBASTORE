@@ -112,8 +112,7 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("PrecoUnitario")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
@@ -148,8 +147,7 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ValorTotal")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -186,12 +184,42 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Preco")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("backend.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpiraEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Revogado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Usado")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("backend.Models.Endereco", b =>
@@ -235,11 +263,25 @@ namespace backend.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("backend.Models.RefreshToken", b =>
+                {
+                    b.HasOne("backend.Models.Cliente", "Cliente")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("backend.Models.Cliente", b =>
                 {
-                    b.Navigation("Endereco");
+                    b.Navigation("Endereco")
+                        .IsRequired();
 
                     b.Navigation("Pedidos");
+
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("backend.Models.Pedido", b =>

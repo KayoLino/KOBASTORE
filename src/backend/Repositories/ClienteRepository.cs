@@ -22,7 +22,7 @@ namespace backend.Repositories
             return await _context.Clientes.ToListAsync(); 
         }
 
-        public async Task<Cliente> GetByIdAsync(int id)
+        public async Task<Cliente?> GetByIdAsync(int id)
         {
             return await _context.Clientes
                 .Include(c => c.Endereco) 
@@ -64,7 +64,7 @@ namespace backend.Repositories
                 .AnyAsync(c => c.CPF == cpf);
         }
 
-        public async Task<Cliente> GetByEmailAsync(string email)
+        public async Task<Cliente?> GetByEmailAsync(string email)
         {
             return await _context.Clientes
                 .FirstOrDefaultAsync(c => c.Email == email); 

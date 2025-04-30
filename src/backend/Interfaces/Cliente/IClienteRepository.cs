@@ -1,8 +1,4 @@
-﻿using Models = backend.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace backend.Interfaces.Cliente
+﻿namespace backend.Interfaces.Cliente
 {
     public interface IClienteRepository
     {
